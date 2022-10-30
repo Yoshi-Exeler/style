@@ -84,16 +84,23 @@ Since javascript does not require us to specify the type of 'v' this code is uns
 
 If you are writing Go, look into https://golangci-lint.run/
 
-## **1.4 TODO:Performance by design**
+## **1.4 Performance by design:**
+
+
 
 # **2. The Paradigm**
 The paradigm defined here aims to be simple and modular with minimal boilerplate code. One of our central goals is to avoid the complex object hierarchies that usually come with object oriented design, since they lead to a number of problems related to reference sharing, state management and initialization.
 
 Note that in the following definitions the words '**trait**' and '**composition**' will be defined in a way not consistent with object oriented design.
 
-## **2.1 Traits**
-A trait is a unit of behavior that can be composed with other traits or embedded into data structures.
-Unlike inheritance, traits do not implicitly create a hierarchy of data structures, which is something we are actively looking to avoid.
+## **2.1 Modelling**
+The default way of modelling a system must be an explicit implementation. Explicit meaning that we simply plan the minimum amount of code required to complete the required task. If, after modelling such an implementation, we find that there is a good opportunity to reduce the complexity of the planned code using an abstraction, we implement that abstraction. Before implementing an abstraction, try to stop yourself, take a deep breath, take a step back from the current project and objectively evaluate wether the abstraction actually reduces the complexity of the system.
+
+Most importantly, we do not abstract out of laziness, we only abstract when the abstraction is either the only way to solve the problem or the abstraction reduces the complexity of the codebase. **We do not abstract to save a few lines of code.**
+
+## **2.2 Traits (interface embedding)**
+In cases where we want to abstract a behavior of an entity, we use Traits.
+A trait is a unit of behavior that can be composed with other traits or embedded into data structures. Unlike inheritance, traits do not implicitly create a hierarchy of data structures, which is something we are actively looking to avoid. In go, we implement traits using interfaces and interface embedding.
 
 **Defining traits:**
 ```go
@@ -149,7 +156,12 @@ func closeConnection(c Connection) {
 }
 ```
 
-## **2.2 Standalone functions**
+## **2.3 Data structure composition**
+In cases where we want to build an abstraction that combines multiple entities into one greater entity, object oriented design would use inheritance. However, inheritance creates a strict hierarchy of entities, which is one of the things we explicitly try to avoid with this style. So instead of inheritance we use composition. The biggest difference between composition and inheritance is the relationship they create between the involved data types. If a data type 'A' is composed of the data types 'B' and 'C' then 'A' has all fields and methods of 'B' and 'C', but no knowledge of their existence. Meaning that making 'A' a composition of 'B' and 'C' is the same as manually adding the fields and methods of 'B' and 'C' to 'A' as long as 'A', 'B' and 'C' are concrete types. 
+
+This means that given our goals, composing data types is strictly better than using inheritance.
+
+## **2.4 Standalone functions**
 Functions may simply exist independently of any other entities. Standalone functions should be pure functions, meaning they should never use global variables or other unsafe shared state. Going forward, standalone functions will be called functions and functions that are associated with an entity will be called methods.
 
 **Consider the following java code example:**
