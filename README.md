@@ -84,8 +84,27 @@ Since javascript does not require us to specify the type of 'v' this code is uns
 
 If you are writing Go, look into https://golangci-lint.run/
 
-## **1.4 Performance by design:**
+## **1.4 Performance by design**
+When we design a system, we will compose the system from optimized patterns, such that the initial design of the system already plans for the required performance. By considering performance during planning, we prevent the situation of having a system already in place that we need to optimize after its creation. 
 
+Even though we do this, requirements will change over time, so we need to also build our software such that all systems are reasonably encapsulated in packages/functions/methods and have a well defined public interface. If our encapsulation and public api are well designed, we can easily optimize the unit of code at a later time without breaking anything.
+
+Note that this encapsulation can be achieved without requiring speculative generalization, which is one of the main problems of object oriented design.
+
+**Consider the following function snippet:**
+```go
+func doSomething() {
+    ...
+    newArray := []string{}
+    for _, elem := oldArray range {
+        if elem != elementInQuestion {
+            newArray = append(newArray,elem)
+        }
+    }
+    ...
+}
+```
+This snippet is something the we could reasonably extract into its own function `removeElement(arr []string, elem string) []string`, allowing us to easily optimize the implementation of the function later without changing anything dependent upon it.
 
 
 # **2. The Paradigm**
@@ -240,3 +259,11 @@ func downloaderWithCache(cache Cache) func(url string) []byte {
     }
 }
 ```
+
+# **3. State Management**
+
+## **3.1 Three layer state management**
+
+## **3.2 Maintining testability**
+
+## **3.3 Dependency injection**
